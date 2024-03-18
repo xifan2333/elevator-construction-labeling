@@ -1,0 +1,56 @@
+{
+  "easycom": {},
+  "pages": [
+    {
+      "path": "pages/new",
+      "type": "home",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "新建"
+      }
+    },
+    {
+      "path": "pages/end",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "顶层"
+      }
+    },
+    {
+      "path": "pages/first",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "第一层"
+      }
+    },
+    {
+      "path": "pages/history",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "历史"
+      }
+    },
+    {
+      "path": "pages/middle",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "middle"
+      }
+    }
+  ],
+  "globalStyle": {
+    "backgroundColor": "@bgColor",
+    "backgroundColorBottom": "@bgColorBottom",
+    "backgroundColorTop": "@bgColorTop",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarBackgroundColor": "#000000",
+    "navigationBarTextStyle": "@navTxtStyle",
+    "navigationBarTitleText": "Uni Creator",
+    "navigationStyle": "custom"
+  },
+  "subPackages": []
+}
