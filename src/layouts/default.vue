@@ -1,6 +1,6 @@
 <template>
-  <wd-config-provider :theme="theme">
-    <view :class="darkMode">
+  <wd-config-provider :theme="theme" :class="darkMode">
+    <view>
       <view class="nav">
         <wd-navbar
           fixed
@@ -20,7 +20,7 @@
           </template>
         </wd-navbar>
       </view>
-      <view class="content flex-grow p-4">
+      <view class="content flex-grow p-4" :style="`min-height:${minHeight}px`">
         <wd-row>
           <wd-col :span="24"><slot></slot></wd-col>
         </wd-row>
@@ -55,18 +55,17 @@
   </wd-config-provider>
 </template>
 <script lang="ts" setup>
-import { toRefs, reactive, ref, getCurrentInstance } from 'vue'
+import { toRefs, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { onLoad } from '@dcloudio/uni-app'
-import { useStore } from '../stores/store'
+import { useStore } from '@/stores/store'
 const store = useStore()
-const { proxy } = getCurrentInstance() as any
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const isDark = ref(false)
 const state = reactive({
   isDark: false,
   get darkMode() {
-    return isDark.value ? 'h-dvh bg-dark1 text-gray-1' : 'h-dvh bg-light1 text-gray-9'
+    return isDark.value ? 'h-full bg-dark1 text-gray-1' : 'h-full  bg-light1 text-gray-9'
   },
   get iconThemeColor() {
     return isDark.value
@@ -79,16 +78,22 @@ const state = reactive({
   toggleTheme() {
     isDark.value = !isDark.value
   },
+  get minHeight() {
+    return uni.getSystemInfoSync().windowHeight
+  },
   theme: 'light' as 'light' | 'dark',
   actions: [{ name: '中文' }, { name: 'English' }, { name: 'Français' }] as any,
   show: false,
   currentTab: 'new',
 })
-const { theme, iconThemeColor, iconLanguageColor, darkMode, show, actions, currentTab } =
+const { theme, iconThemeColor, iconLanguageColor, darkMode, show, actions, currentTab, minHeight } =
   toRefs(state)
 const changeTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
   isDark.value = !isDark.value
+  // 记录当前主题
+  uni.setStorageSync('theme', theme.value)
+  uni.setStorageSync('isDark', isDark.value)
 }
 const changeLanguage = () => {
   show.value = true
@@ -100,19 +105,19 @@ const select = (item: any) => {
   const index = item.index
   switch (index) {
     case 0:
-      proxy.$i18n.locale = 'zh-Hans'
+      locale.value = 'zh-Hans'
       break
     case 1:
-      proxy.$i18n.locale = 'en'
+      locale.value = 'en'
       break
     case 2:
-      proxy.$i18n.locale = 'fr'
+      locale.value = 'fr'
       break
   }
-  uni.setLocale(proxy.$i18n.locale)
+  uni.setLocale(locale.value)
   show.value = false
 }
-const changeTab = ({ value }) => {
+const changeTab = ({ value }: { value: string }) => {
   store.setCurrentTab(value)
   switch (value) {
     case 'new':
@@ -129,6 +134,12 @@ const changeTab = ({ value }) => {
 }
 onLoad(() => {
   currentTab.value = store.currentTab
+  theme.value = uni.getStorageSync('theme') || 'light'
+  isDark.value = uni.getStorageSync('isDark') || false
 })
 </script>
-<style scoped></style>
+<style>
+page {
+  height: 100%;
+}
+</style>

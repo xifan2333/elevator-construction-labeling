@@ -12,6 +12,11 @@ import UniManifest from '@uni-helper/vite-plugin-uni-manifest'
 import wotDesignUni from './wot-design-uni.config'
 
 export default defineConfig({
+  define: {
+    __VUE_I18N_FULL_INSTALL__: 'false',
+    __VUE_I18N_LEGACY_API__: 'false',
+    __INTLIFY_PROD_DEVTOOLS__: 'false',
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -40,7 +45,12 @@ export default defineConfig({
   ],
   build: {
     target: 'es6',
-    cssTarget: 'chrome61', // https://cn.vitejs.dev/config/build-options.html#build-csstarget
+    cssTarget: 'chrome61',
+    rollupOptions: {
+      output: {
+        format: 'es', // 或者 'cjs'
+      },
+    },
   },
   optimizeDeps: {
     exclude:

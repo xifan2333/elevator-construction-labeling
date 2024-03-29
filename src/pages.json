@@ -10,19 +10,19 @@
       }
     },
     {
-      "path": "pages/end",
+      "path": "pages/bi",
       "type": "page",
       "layout": "default",
       "style": {
-        "navigationBarTitleText": "顶层"
+        "navigationBarTitleText": "整体"
       }
     },
     {
-      "path": "pages/first",
+      "path": "pages/floor",
       "type": "page",
       "layout": "default",
       "style": {
-        "navigationBarTitleText": "第一层"
+        "navigationBarTitleText": "楼层"
       }
     },
     {
@@ -34,11 +34,35 @@
       }
     },
     {
-      "path": "pages/middle",
+      "path": "pages/intergral",
       "type": "page",
       "layout": "default",
       "style": {
-        "navigationBarTitleText": "middle"
+        "navigationBarTitleText": "整体"
+      }
+    },
+    {
+      "path": "pages/pdf",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "PDF导出"
+      }
+    },
+    {
+      "path": "pages/pit",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "底坑"
+      }
+    },
+    {
+      "path": "pages/slab",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "整体"
       }
     }
   ],

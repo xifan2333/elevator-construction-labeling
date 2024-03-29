@@ -12,6 +12,7 @@ import zh from '@/locales/zh.json'
 import fr from '@/locales/fr.json'
 import { Locale } from 'wot-design-uni'
 import enUS from 'wot-design-uni/locale/lang/en-US'
+import VConsole from 'vconsole'
 Locale.use('en-US', enUS)
 const messages = {
   en,
@@ -23,6 +24,7 @@ let i18nConfig = {
   locale: uni.getLocale(), // 获取已设置的语言
   messages,
 }
+
 const i18n = createI18n(i18nConfig)
 export function createApp() {
   const app = createSSRApp(App)

@@ -11,11 +11,11 @@
   <view class="new">
     <wd-form ref="form" :model="meta">
       <wd-picker
-        :columns="meta.options"
-        :label="t('meta.model')"
-        :placeholder="t('meta.model.placeholder')"
-        v-model="meta.model"
-        :rules="[{ required: true, message: t('meta.model.msg') }]"
+        :columns="options"
+        :label="t('meta.type')"
+        :placeholder="t('meta.type.placeholder')"
+        v-model="meta.type"
+        :rules="[{ required: true, message: t('meta.type.msg') }]"
         @confirm="confirmModel"
         :z-index="100"
       />
@@ -29,6 +29,15 @@
         :rules="[{ required: true, message: t('meta.floors.msg') }]"
       />
       <wd-input
+        :label="t('meta.begin')"
+        type="digit"
+        prop="begin"
+        :placeholder="t('meta.begin.placeholder')"
+        v-model="meta.begin"
+        clearable
+        :rules="[{ required: true, message: t('meta.begin.msg') }]"
+      />
+      <wd-input
         :label="t('meta.site')"
         prop="site"
         :placeholder="t('meta.site.placeholder')"
@@ -37,21 +46,21 @@
         :rules="[{ required: true, message: t('meta.site.msg') }]"
       />
       <wd-input
-        :label="t('meta.number')"
-        :placeholder="t('meta.number.placeholder')"
-        v-model="meta.number"
-        prop="number"
+        :label="t('meta.id')"
+        :placeholder="t('meta.id.placeholder')"
+        v-model="meta.id"
+        prop="id"
         clearable
-        :rules="[{ required: true, message: t('meta.number.msg') }]"
+        :rules="[{ required: true, message: t('meta.id.msg') }]"
       />
 
       <wd-input
-        :label="t('meta.person')"
-        v-model="meta.person"
-        prop="person"
-        :placeholder="t('meta.person.placeholder')"
+        :label="t('meta.supervisor')"
+        v-model="meta.supervisor"
+        prop="supervisor"
+        :placeholder="t('meta.supervisor.placeholder')"
         clearable
-        :rules="[{ required: true, message: t('meta.person.msg') }]"
+        :rules="[{ required: true, message: t('meta.supervisor.msg') }]"
       />
       <wd-calendar
         v-model="meta.date"
@@ -74,8 +83,8 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, toRaw, ref } from 'vue'
-import { useStore } from '../stores/store'
+import { reactive, ref } from 'vue'
+import { useStore } from '@/stores/store'
 import { useI18n } from 'vue-i18n'
 import { useToast } from 'wot-design-uni'
 import { dayjs } from 'wot-design-uni'
@@ -83,17 +92,18 @@ const toast = useToast()
 const { t } = useI18n()
 const store = useStore()
 const meta = reactive({
-  model: '',
+  type: '',
   floors: '',
+  begin: '',
   site: '',
-  number: '',
-  person: '',
+  id: '',
+  supervisor: '',
   date: 0,
-  options: ['modelA', 'modelB', 'modelC'],
 })
+const options = ref(['typeA', 'typeB', 'typeC'])
 const form = ref()
 const confirmModel = ({ value }: { value: any }) => {
-  meta.model = value
+  meta.type = value
 }
 const dateFormate = (date: any) => {
   return dayjs(date).format('MM-YYYY-DD')
@@ -104,9 +114,12 @@ const confirmDate = ({ value }: { value: any }) => {
 const submit = () => {
   form.value.validate().then(({ valid, error }: { valid: boolean; error: any }) => {
     if (valid) {
-      toast.success(t('meta.submit.success'))
+      store.restProject()
       store.setMeta(meta)
-      uni.navigateTo({ url: '/pages/first' })
+      toast.success(t('meta.submit.success'))
+      setTimeout(() => {
+        uni.navigateTo({ url: `/pages/intergral?mode=new&id=${store.project.id}` })
+      }, 1000)
     } else {
       console.log('error', error)
     }
@@ -114,10 +127,4 @@ const submit = () => {
 }
 </script>
 
-<style>
-/* 修复暗黑模式日历标签颜色 */
-.wd-calendar__label {
-  color: inherit !important;
-  width: 500px;
-}
-</style>
+<style></style>

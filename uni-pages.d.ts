@@ -5,10 +5,13 @@
 
 interface NavigateToOptions {
   url: "/pages/new" |
-       "/pages/end" |
-       "/pages/first" |
+       "/pages/bi" |
+       "/pages/floor" |
        "/pages/history" |
-       "/pages/middle";
+       "/pages/intergral" |
+       "/pages/pdf" |
+       "/pages/pit" |
+       "/pages/slab";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 
