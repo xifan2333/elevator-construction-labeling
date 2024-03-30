@@ -93,5 +93,8 @@
   "history.btn.delete": "删除",
   "history.btn.export": "导出",
   "history.delete.success": "项目删除成功",
-  "pdf.btn.save": "保存"
+  "pdf.btn.save": "保存",
+  "pdf.toast.upload": "正在生成PDF文件...",
+  "pdf.toast.success": "文件已保存",
+  "pdf.toast.error": "PDF文件生成失败"
 }

@@ -12,8 +12,6 @@ import zh from '@/locales/zh.json'
 import fr from '@/locales/fr.json'
 import { Locale } from 'wot-design-uni'
 import enUS from 'wot-design-uni/locale/lang/en-US'
-import VConsole from 'vconsole'
-Locale.use('en-US', enUS)
 const messages = {
   en,
   fr,

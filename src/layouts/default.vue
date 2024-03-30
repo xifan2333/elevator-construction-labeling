@@ -20,7 +20,7 @@
           </template>
         </wd-navbar>
       </view>
-      <view class="content flex-grow p-4" :style="`min-height:${minHeight}px`">
+      <view class="content flex-grow p-4">
         <wd-row>
           <wd-col :span="24"><slot></slot></wd-col>
         </wd-row>
@@ -65,7 +65,7 @@ const isDark = ref(false)
 const state = reactive({
   isDark: false,
   get darkMode() {
-    return isDark.value ? 'h-full bg-dark1 text-gray-1' : 'h-full  bg-light1 text-gray-9'
+    return isDark.value ? 'h-full bg-dark1 text-gray-1' : ' h-full bg-light1 text-gray-9'
   },
   get iconThemeColor() {
     return isDark.value
@@ -78,15 +78,12 @@ const state = reactive({
   toggleTheme() {
     isDark.value = !isDark.value
   },
-  get minHeight() {
-    return uni.getSystemInfoSync().windowHeight
-  },
   theme: 'light' as 'light' | 'dark',
   actions: [{ name: '中文' }, { name: 'English' }, { name: 'Français' }] as any,
   show: false,
   currentTab: 'new',
 })
-const { theme, iconThemeColor, iconLanguageColor, darkMode, show, actions, currentTab, minHeight } =
+const { theme, iconThemeColor, iconLanguageColor, darkMode, show, actions, currentTab } =
   toRefs(state)
 const changeTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light'
@@ -138,8 +135,4 @@ onLoad(() => {
   isDark.value = uni.getStorageSync('isDark') || false
 })
 </script>
-<style>
-page {
-  height: 100%;
-}
-</style>
+<style></style>

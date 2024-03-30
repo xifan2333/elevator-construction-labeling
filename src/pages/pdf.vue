@@ -15,6 +15,7 @@
     <view class="canvas-wrapper" :style="`height:${canvasHeight}px`">
       <canvas type="2d" canvas-id="pdf-canvas" class="w-full h-full" id="pdf-canvas" />
     </view>
+    <wd-toast />
   </view>
 </template>
 
@@ -24,6 +25,7 @@ import { useI18n } from 'vue-i18n'
 import { onLoad, onReady } from '@dcloudio/uni-app'
 import { useStore } from '@/stores/store'
 import { dayjs } from 'wot-design-uni'
+import { useToast } from 'wot-design-uni'
 import imgIntergralTop from '@/static/images/intergral-top.png'
 import imgIntergralBottom from '@/static/images/intergral-bottom.png'
 import imgIntergralMiddle from '@/static/images/intergral-middle.png'
@@ -31,42 +33,36 @@ import imgPit from '@/static/images/pit.png'
 import imgFloor from '@/static/images/floor.png'
 import imgSlab from '@/static/images/slab.png'
 import imgBi from '@/static/images/bi.png'
-import jsPDF from 'jspdf'
+import { jsPDF } from 'jspdf'
+
 const { t } = useI18n()
 const store = useStore()
+const toast = useToast()
 let ctx: any = null
 let $canvas: any = null
 let intervalId: any = null
 const title = ref('')
 const canvasHeight = ref(100)
 const save = () => {
-  const pdf = new jsPDF()
-  uni.canvasToTempFilePath({
-    canvasId: 'pdf-canvas',
-    success: (res) => {
-      pdf.addImage(res.tempFilePath, 'PNG', 0, 0, 210, 297)
-      let base64 = pdf.output('datauristring').split(',')[1]
-
-      uni.request({
-        url: 'https://api.imgbb.com/1/upload?key=96bea9c3e0ead6a1810fc30d050bf435',
-        method: 'POST',
-        data: {
-          image: base64,
-          name: title.value,
-        },
-        header: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-
-        success: (res) => {
-          console.log(res)
-        },
-        fail: (err) => {
-          console.error(err)
-        },
-      })
+  uni.canvasToTempFilePath(
+    {
+      canvasId: 'pdf-canvas',
+      success: (res) => {
+        //  保存图片到本地
+        uni.saveImageToPhotosAlbum({
+          filePath: res.tempFilePath,
+          success: () => {
+            toast.success(t('pdf.toast.success'))
+          },
+          fail: () => {
+            toast.error(t('pdf.toast.fail'))
+          },
+        })
+      },
+      fail: (err) => {},
     },
-  })
+    this,
+  )
 }
 onLoad((query: any) => {
   title.value = query.name
@@ -189,7 +185,7 @@ const draw = async () => {
 
       let y = height
       height = (width / imageIntergralMiddle.width) * imageIntergralMiddle.height
-      for (let i = 0; i < parseInt(store.project.meta.floors) - 2; i++) {
+      for (let i = 0; i < parseInt(store.project.meta.floors) - 1; i++) {
         ctx.drawImage(imageIntergralMiddle.path, 0, y, width, height)
         y += height
       }

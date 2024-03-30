@@ -46,11 +46,6 @@ export default defineConfig({
   build: {
     target: 'es6',
     cssTarget: 'chrome61',
-    rollupOptions: {
-      output: {
-        format: 'es', // 或者 'cjs'
-      },
-    },
   },
   optimizeDeps: {
     exclude:

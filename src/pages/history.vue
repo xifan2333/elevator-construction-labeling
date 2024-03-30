@@ -48,11 +48,11 @@ const fetchHistory = () => {
   history.value = store.projects
 }
 const edit = (item: any) => {
-  store.project = item
+  store.setCurrentProject(item)
   uni.navigateTo({ url: `/pages/intergral?mode=edit&id=${item.id}` })
 }
 const _export = (item: any) => {
-  store.project = item
+  store.setCurrentProject(item)
   uni.navigateTo({ url: `/pages/pdf?id=${item.id}&name=TK_Elevator_${item.meta.id}.pdf` })
 }
 const _delete = (item: any) => {

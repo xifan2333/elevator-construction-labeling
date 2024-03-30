@@ -64,6 +64,10 @@ export const useStore = defineStore({
     getProject(id: string) {
       return this.projects.find((project: any) => project.id === id)
     },
+    setCurrentProject(project: any) {
+      this.project = project
+      uni.setStorageSync('project', JSON.stringify(this.project))
+    },
     setCurrentTab(tab: string) {
       this.currentTab = tab
       uni.setStorageSync('currentTab', this.currentTab)
