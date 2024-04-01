@@ -12,8 +12,8 @@
     <wd-cell :title="title" center class="mb-4">
       <wd-button size="small" type="success" @click="save">{{ t('pdf.btn.save') }}</wd-button>
     </wd-cell>
-    <view class="canvas-wrapper" :style="`height:${canvasHeight}px`">
-      <canvas type="2d" canvas-id="pdf-canvas" class="w-full h-full" id="pdf-canvas" />
+    <view class="canvas-wrapper" :style="{ height: canvasHeight + 'px`' }">
+      <canvas type="2d" canvas-id="pdf-canvas" id="pdf-canvas" class="h-full w-full" />
     </view>
     <wd-toast />
   </view>
@@ -33,7 +33,6 @@ import imgPit from '@/static/images/pit.png'
 import imgFloor from '@/static/images/floor.png'
 import imgSlab from '@/static/images/slab.png'
 import imgBi from '@/static/images/bi.png'
-import { jsPDF } from 'jspdf'
 
 const { t } = useI18n()
 const store = useStore()
@@ -43,6 +42,10 @@ let $canvas: any = null
 let intervalId: any = null
 const title = ref('')
 const canvasHeight = ref(100)
+/**
+ * 保存图片到本地相册
+ * @function save
+ */
 const save = () => {
   uni.canvasToTempFilePath(
     {
@@ -64,6 +67,10 @@ const save = () => {
     this,
   )
 }
+/**
+ * 加载页面时执行的函数。
+ * @param {any} query - 查询参数。
+ */
 onLoad((query: any) => {
   title.value = query.name
 })
@@ -80,13 +87,19 @@ const getImageInfo = async (src: string) => {
     })
   })
 }
+/**
+ * 绘制画布
+ * @returns {Promise<void>}
+ */
 const draw = async () => {
   if (ctx) {
+    // 清除画布，更改画布高度，一定要加延时，否则可能会出现绘制不完整的情况
     ctx.clearRect(0, 0, $canvas.width, $canvas.height)
     await changeHeight()
     setTimeout(() => {
       console.log('等待画布高度计算完成')
     }, 2500)
+    // 加载要用到的图片
     let imageIntergralTop = (await getImageInfo(imgIntergralTop)) as any
     let imageIntergralBottom = (await getImageInfo(imgIntergralBottom)) as any
     let imageIntergralMiddle = (await getImageInfo(imgIntergralMiddle)) as any
@@ -94,6 +107,7 @@ const draw = async () => {
     let imageFloor = (await getImageInfo(imgFloor)) as any
     let imageSlab = (await getImageInfo(imgSlab)) as any
     let imageBi = (await getImageInfo(imgBi)) as any
+    // 如果图片加载成功，开始绘制
     if (
       imageIntergralTop &&
       imageIntergralBottom &&
@@ -103,14 +117,19 @@ const draw = async () => {
       imageSlab &&
       imageBi
     ) {
+      // 获取图片的宽度和高度
       let width = $canvas.width
       let height = (width / imageIntergralTop.width) * imageIntergralTop.height
+      // 绘制整体图的顶部
       ctx.drawImage(imageIntergralTop.path, 0, 0, width, height)
+      // 设置文字大小及颜色
       ctx.setFontSize(12)
       ctx.setFillStyle('black')
+      // 添加项目信息
       try {
         ctx.fillText(
           `${t('meta.type')}:${store.project.meta.type}`,
+          // 将图片宽高分成24份，通过改变倍数来调整文字位置
           (width / 24) * 15,
           (height / 24) * 3,
         )
@@ -163,6 +182,7 @@ const draw = async () => {
         console.error(error)
       }
       ctx.setFillStyle('red')
+      //
       try {
         ctx.fillText(
           `${t('intergral.underSlabHeight')}:${store.project.new.intergral.underSlabHeight}`,

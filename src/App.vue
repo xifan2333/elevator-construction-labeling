@@ -5,6 +5,7 @@ onLaunch(() => {})
 </script>
 
 <style>
+/* 修复wot-design-uni 中calendar组件的样式问题 */
 .wd-calendar__label {
   color: inherit !important;
 }

@@ -88,6 +88,9 @@ const showPreview = () => {
   preview.show = true
   draw()
 }
+/**
+ * 计算图片的位置和大小
+ * */
 
 const calculateImagePositionAndSize = (
   imgWidth: number,
@@ -119,6 +122,9 @@ const calculateImagePositionAndSize = (
 
   return { posX, posY, width, height }
 }
+/**
+ * 绘制画布
+ */
 const draw = () => {
   let device = uni.getSystemInfoSync()
   let $canvasWidth = device.windowWidth
@@ -162,6 +168,14 @@ const draw = () => {
     },
   })
 }
+/**
+ * 当页面准备就绪时，执行以下操作：
+ * 1. 设置定时器，每隔1.5秒执行一次回调函数
+ * 2. 在回调函数中，使用uni.createSelectorQuery()获取canvas元素的信息，并将结果存储在$canvas变量中
+ * 3. 使用uni.createCanvasContext()创建画布上下文对象，并将结果存储在ctx变量中
+ * 4. 如果ctx和$canvas都存在，则清除定时器，清除画布上的内容，并调用draw()函数绘制新内容
+ * 5. 如果ctx和$canvas不存在，则直接调用draw()函数绘制新内容
+ */
 onReady(() => {
   intervalId = setInterval(() => {
     uni
@@ -182,6 +196,9 @@ onReady(() => {
     }
   }, 1500)
 })
+/**
+ * 执行下一步操作
+ */
 const next = () => {
   form.value.validate().then(({ valid, error }: { valid: boolean; error: any }) => {
     if (valid) {

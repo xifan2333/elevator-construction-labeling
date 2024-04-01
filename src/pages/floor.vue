@@ -8,9 +8,11 @@
 </route>
 
 <template>
+  <!-- 页面模板 -->
   <view class="floor">
     <wd-cell :title="t('floor.title')" :value="`(${currentFloor}/${endFloor})`" />
     <wd-form ref="form" :model="floor">
+      <!-- 输入框组件 -->
       <wd-input
         :label="t('floor.height')"
         type="digit"
@@ -39,6 +41,7 @@
         :rules="[{ required: true, message: t('floor.sillHeight.msg') }]"
       />
       <view class="footer flex mt-4">
+        <!-- 按钮组件 -->
         <wd-button type="primary" block width="30%" @click="showPreview">{{
           t('floor.preview')
         }}</wd-button>
@@ -61,9 +64,17 @@ import image from '@/static/images/floor.png'
 import { onReady, onLoad } from '@dcloudio/uni-app'
 import { useStore } from '@/stores/store'
 import { useToast } from 'wot-design-uni/components/wd-toast'
+
+// 使用国际化
 const { t } = useI18n()
+
+// 使用全局状态
 const store = useStore()
+
+// 使用 Toast 组件
 const toast = useToast()
+
+// 定义变量
 let beginFloor = 0
 let currentFloor = 0
 let endFloor = 0
@@ -72,6 +83,8 @@ let $canvas: any = null
 let intervalId: any = null
 let mode: string = ''
 let id: string = ''
+
+// 定义响应式数据
 const form = ref()
 const floor = reactive({
   height: '',
@@ -86,10 +99,13 @@ const preview = reactive({
   y: 0,
 })
 
+// 显示预览
 const showPreview = () => {
   preview.show = true
   draw()
 }
+
+// 计算图片位置和大小
 const calculateImagePositionAndSize = (
   imgWidth: number,
   imgHeight: number,
@@ -120,6 +136,8 @@ const calculateImagePositionAndSize = (
 
   return { posX, posY, width, height }
 }
+
+// 绘制画布
 const draw = () => {
   let device = uni.getSystemInfoSync()
   let $canvasWidth = device.windowWidth
@@ -163,6 +181,8 @@ const draw = () => {
     },
   })
 }
+
+// 页面加载完成时执行
 onLoad((query: any) => {
   beginFloor = parseInt(query.begin_floor)
   currentFloor = parseInt(query.current_floor)
@@ -170,6 +190,8 @@ onLoad((query: any) => {
   mode = query.mode
   id = query.id
 })
+
+// 页面渲染完成时执行
 onReady(() => {
   intervalId = setInterval(() => {
     uni
@@ -191,6 +213,7 @@ onReady(() => {
   }, 1500)
 })
 
+// 下一步操作
 const next = () => {
   form.value.validate().then(({ valid, error }: { valid: boolean; error: any }) => {
     if (valid) {

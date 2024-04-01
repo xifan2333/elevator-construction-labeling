@@ -1,15 +1,8 @@
-<route lang="json5" type="page">
-{
-  layout: 'default',
-  style: {
-    navigationBarTitleText: '整体',
-  },
-}
-</route>
-
 <template>
   <view class="bi">
+    <!-- 表单 -->
     <wd-form ref="form" :model="bi">
+      <!-- 高度输入框 -->
       <wd-input
         :label="t('bi.height')"
         type="digit"
@@ -19,6 +12,7 @@
         clearable
         :rules="[{ required: true, message: t('bi.height.msg') }]"
       />
+      <!-- 宽度输入框 -->
       <wd-input
         :label="t('bi.width')"
         type="digit"
@@ -28,6 +22,7 @@
         clearable
         :rules="[{ required: true, message: t('bi.width.msg') }]"
       />
+      <!-- 深度输入框 -->
       <wd-input
         :label="t('bi.depth')"
         type="digit"
@@ -37,22 +32,28 @@
         clearable
         :rules="[{ required: true, message: t('bi.depth.msg') }]"
       />
+      <!-- 底部按钮 -->
       <view class="footer flex mt-4">
+        <!-- 预览按钮 -->
         <wd-button type="primary" block width="30%" @click="showPreview">{{
           t('bi.preview')
         }}</wd-button>
+        <!-- 下一步按钮 -->
         <wd-button type="success" block width="30%" @click="next">{{ t('bi.next') }}</wd-button>
       </view>
     </wd-form>
+    <!-- 预览图层 -->
     <wd-overlay :show="preview.show" @click="preview.show = false">
       <view class="flex justify-center items-center">
         <canvas id="canvas" canvas-id="canvas" class="h-screen w-screen" />
       </view>
     </wd-overlay>
+    <!-- 提示框 -->
     <wd-toast />
   </view>
 </template>
 
+/** * @script * @lang ts * @setup * @description 页面逻辑脚本 */
 <script lang="ts" setup>
 import { useI18n } from 'vue-i18n'
 import { reactive, ref } from 'vue'
@@ -60,22 +61,41 @@ import image from '@/static/images/bi.png'
 import { onReady, onLoad } from '@dcloudio/uni-app'
 import { useStore } from '@/stores/store'
 import { useToast } from 'wot-design-uni/components/wd-toast'
+
 const { t } = useI18n()
 const store = useStore()
 const toast = useToast()
+
 let ctx: any = null
 let $canvas: any = null
 let intervalId: any = null
 let mode: string = ''
+
+/**
+ * @onLoad
+ * @param {object} query - 页面参数
+ * @description 页面加载时执行的函数，获取页面参数
+ */
 onLoad((query: any) => {
   mode = query.mode
 })
+
 const form = ref()
+
+/**
+ * @reactive
+ * @description 表单数据
+ */
 const bi = reactive({
   height: '',
   width: '',
   depth: '',
 })
+
+/**
+ * @reactive
+ * @description 预览配置
+ */
 const preview = reactive({
   show: false,
   width: 300,
@@ -84,11 +104,24 @@ const preview = reactive({
   y: 0,
 })
 
+/**
+ * @function
+ * @description 显示预览图层
+ */
 const showPreview = () => {
   preview.show = true
   draw()
 }
 
+/**
+ * @function
+ * @param {number} imgWidth - 图片宽度
+ * @param {number} imgHeight - 图片高度
+ * @param {number} canvasWidth - 画布宽度
+ * @param {number} canvasHeight - 画布高度
+ * @returns {object} - 图片位置和尺寸信息
+ * @description 计算图片在画布中的位置和尺寸
+ */
 const calculateImagePositionAndSize = (
   imgWidth: number,
   imgHeight: number,
@@ -119,6 +152,11 @@ const calculateImagePositionAndSize = (
 
   return { posX, posY, width, height }
 }
+
+/**
+ * @function
+ * @description 绘制预览图
+ */
 const draw = () => {
   let device = uni.getSystemInfoSync()
   let $canvasWidth = device.windowWidth
@@ -162,6 +200,11 @@ const draw = () => {
     },
   })
 }
+
+/**
+ * @onReady
+ * @description 页面渲染完成时执行的函数
+ */
 onReady(() => {
   intervalId = setInterval(() => {
     uni
@@ -181,6 +224,11 @@ onReady(() => {
     }
   }, 1500)
 })
+
+/**
+ * @function
+ * @description 下一步操作
+ */
 const next = () => {
   form.value.validate().then(({ valid, error }: { valid: boolean; error: any }) => {
     if (valid) {

@@ -11,11 +11,7 @@
     },
     {
       "path": "pages/bi",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "整体"
-      }
+      "type": "page"
     },
     {
       "path": "pages/floor",

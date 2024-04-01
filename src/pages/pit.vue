@@ -67,10 +67,13 @@ let ctx: any = null
 let $canvas: any = null
 let intervalId: any = null
 let mode = ''
-let id = ''
+/**
+ * 获取当前页面的模式，参数为new 或 edit，new 表示新建，edit 表示编辑即二次标注
+  * @param query
+
+ */
 onLoad((query: any) => {
   mode = query.mode
-  id = query.id
 })
 const form = ref()
 const pit = reactive({
@@ -86,11 +89,22 @@ const preview = reactive({
   y: 0,
 })
 
+/**
+ * 显示预览
+ */
 const showPreview = () => {
   preview.show = true
   draw()
 }
 
+/**
+ * 计算图片在画布中的位置和大小
+ * @param {number} imgWidth - 图片的宽度
+ * @param {number} imgHeight - 图片的高度
+ * @param {number} canvasWidth - 画布的宽度
+ * @param {number} canvasHeight - 画布的高度
+ * @returns {object} - 包含图片在画布中的位置和大小的对象
+ */
 const calculateImagePositionAndSize = (
   imgWidth: number,
   imgHeight: number,
@@ -121,29 +135,42 @@ const calculateImagePositionAndSize = (
 
   return { posX, posY, width, height }
 }
+/**
+ * 绘制画布
+ * @returns {void}
+ */
+
 const draw = () => {
+  // 获取设备的宽高
   let device = uni.getSystemInfoSync()
   let $canvasWidth = device.windowWidth
   let $canvasHeight = device.windowHeight
-
+  // 获取图片宽高
   uni.getImageInfo({
     src: image,
     success: (res) => {
       if (ctx) {
+        // 清空画布
+        ctx.clearRect(0, 0, $canvasWidth, $canvasHeight)
+        // 计算图片位置和大小
         const { posX, posY, width, height } = calculateImagePositionAndSize(
           res.width,
           res.height,
           $canvasWidth,
           $canvasHeight,
         )
+        // 绘制图片
         ctx.drawImage(res.path, posX, posY, width, height)
+        // 绘制文字
         ctx.setFontSize(14)
+        // 如果是新建模式，绘制新建的坑的尺寸
         if (mode === 'new') {
           ctx.setFillStyle('red')
           ctx.fillText(pit.height, posX + (width / 24) * 1, posY + (height / 24) * 12)
           ctx.fillText(pit.width, posX + (width / 24) * 17.5, posY + (height / 24) * 22)
           ctx.fillText(pit.depth, posX + (width / 24) * 7.5, posY + (height / 24) * 22)
         }
+        // 如果是编辑模式，绘制二次标注的底坑的尺寸及原始的底坑尺寸
         if (mode === 'edit') {
           let pitHeight = store.project.new.pit.height
           let pitWidth = store.project.new.pit.width
@@ -164,6 +191,10 @@ const draw = () => {
     },
   })
 }
+/**
+ * 当页面加载完成时，获取画布的宽高，并一定确保它加载到页面，如果没有就循环绘画
+ */
+
 onReady(() => {
   intervalId = setInterval(() => {
     uni
@@ -184,6 +215,11 @@ onReady(() => {
     }
   }, 1500)
 })
+
+/**
+ * 下一步
+ * 保存数据并跳转页面
+ */
 
 const next = () => {
   console.log(store.project)

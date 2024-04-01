@@ -91,6 +91,7 @@ import { dayjs } from 'wot-design-uni'
 const toast = useToast()
 const { t } = useI18n()
 const store = useStore()
+// 要填写的表单数据，与界面双向绑定
 const meta = reactive({
   type: '',
   floors: '',
@@ -105,12 +106,27 @@ const form = ref()
 const confirmModel = ({ value }: { value: any }) => {
   meta.type = value
 }
+
+/**
+ * 格式化日期
+ * @param {any} date - 要格式化的日期
+ * @returns {string} - 格式化后的日期字符串
+ */
 const dateFormate = (date: any) => {
   return dayjs(date).format('MM-YYYY-DD')
 }
+/**
+ * 确认日期
+ * @param {Object} value - 日期值
+ */
 const confirmDate = ({ value }: { value: any }) => {
   meta.date = value
 }
+/**
+ * 提交表单
+
+ * @returns {void}
+ */
 const submit = () => {
   form.value.validate().then(({ valid, error }: { valid: boolean; error: any }) => {
     if (valid) {

@@ -9,7 +9,9 @@
 
 <template>
   <view class="intergral">
+    <!-- 表单 -->
     <wd-form ref="form" :model="intergral">
+      <!-- 地板下高度输入框 -->
       <wd-input
         :label="t('intergral.underSlabHeight')"
         type="digit"
@@ -19,6 +21,7 @@
         clearable
         :rules="[{ required: true, message: t('intergral.underSlabHeight.msg') }]"
       />
+      <!-- 电梯行程输入框 -->
       <wd-input
         :label="t('intergral.elevatorTrip')"
         type="digit"
@@ -28,6 +31,7 @@
         clearable
         :rules="[{ required: true, message: t('intergral.elevatorTrip.msg') }]"
       />
+      <!-- 坑道高度输入框 -->
       <wd-input
         :label="t('intergral.pitHeight')"
         type="digit"
@@ -37,20 +41,25 @@
         clearable
         :rules="[{ required: true, message: t('intergral.pitHeight.msg') }]"
       />
+      <!-- 底部按钮 -->
       <view class="footer flex mt-4">
+        <!-- 预览按钮 -->
         <wd-button type="primary" block width="30%" @click="showPreview">{{
           t('intergral.preview')
         }}</wd-button>
+        <!-- 下一步按钮 -->
         <wd-button type="success" block width="30%" @click="next">{{
           t('intergral.next')
         }}</wd-button>
       </view>
     </wd-form>
+    <!-- 预览图层 -->
     <wd-overlay :show="preview.show" @click="preview.show = false">
       <view class="flex justify-center items-center">
         <canvas id="canvas" canvas-id="canvas" class="h-screen w-screen" />
       </view>
     </wd-overlay>
+    <!-- 提示框 -->
     <wd-toast />
   </view>
 </template>
@@ -62,19 +71,23 @@ import image from '@/static/images/intergral.png'
 import { onReady, onLoad } from '@dcloudio/uni-app'
 import { useStore } from '@/stores/store'
 import { useToast } from 'wot-design-uni/components/wd-toast'
+
 const { t } = useI18n()
 const store = useStore()
 const toast = useToast()
+
 let ctx: any = null
 let $canvas: any = null
 let intervalId: any = null
 let mode = ''
+
 const form = ref()
 const intergral = reactive({
   underSlabHeight: '',
   elevatorTrip: '',
   pitHeight: '',
 })
+
 const preview = reactive({
   show: false,
   width: 300,
@@ -82,14 +95,35 @@ const preview = reactive({
   x: 0,
   y: 0,
 })
+
+/**
+ * 页面加载时的回调函数
+ *
+ * 用于获取页面参数。
+ *
+ * @param {Object} query - 页面参数
+ */
 onLoad((query: any) => {
   mode = query.mode
 })
+
+/**
+ * 显示预览图层
+ */
 const showPreview = () => {
   preview.show = true
   draw()
 }
 
+/**
+ * 计算图片位置和大小
+ *
+ * @param {number} imgWidth - 图片宽度
+ * @param {number} imgHeight - 图片高度
+ * @param {number} canvasWidth - 画布宽度
+ * @param {number} canvasHeight - 画布高度
+ * @returns {Object} - 图片位置和大小信息
+ */
 const calculateImagePositionAndSize = (
   imgWidth: number,
   imgHeight: number,
@@ -120,6 +154,10 @@ const calculateImagePositionAndSize = (
 
   return { posX, posY, width, height }
 }
+
+/**
+ * 绘制预览图
+ */
 const draw = () => {
   let device = uni.getSystemInfoSync()
   let $canvasWidth = device.windowWidth
@@ -160,6 +198,11 @@ const draw = () => {
   })
 }
 
+/**
+ * 页面准备完成时的回调函数
+ *
+ * 用于绘制预览图。
+ */
 onReady(() => {
   intervalId = setInterval(() => {
     uni
@@ -179,6 +222,12 @@ onReady(() => {
     }
   }, 1500)
 })
+
+/**
+ * 下一步按钮点击事件处理函数
+ *
+ * 用于验证表单数据，并进行下一步操作。
+ */
 const next = () => {
   form.value.validate().then(({ valid, error }: { valid: boolean; error: any }) => {
     if (valid) {

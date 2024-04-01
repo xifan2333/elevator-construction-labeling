@@ -41,25 +41,55 @@ const store = useStore()
 const { t } = useI18n()
 const history = ref([] as any[])
 const search = ref('')
+
+/**
+ * 加载历史记录
+ */
 onLoad(() => {
   fetchHistory()
 })
+
+/**
+ * 获取历史记录
+ */
 const fetchHistory = () => {
   history.value = store.projects
 }
+
+/**
+ * 编辑历史记录
+ *
+ * @param item - 要编辑的历史记录项
+ */
 const edit = (item: any) => {
   store.setCurrentProject(item)
   uni.navigateTo({ url: `/pages/intergral?mode=edit&id=${item.id}` })
 }
+
+/**
+ * 导出历史记录
+ *
+ * @param item - 要导出的历史记录项
+ */
 const _export = (item: any) => {
   store.setCurrentProject(item)
   uni.navigateTo({ url: `/pages/pdf?id=${item.id}&name=TK_Elevator_${item.meta.id}.pdf` })
 }
+
+/**
+ * 删除历史记录
+ *
+ * @param item - 要删除的历史记录项
+ */
 const _delete = (item: any) => {
   store.deleteProject(item.id)
   toast.success(t('history.delete.success'))
   fetchHistory()
 }
+
+/**
+ * 搜索历史记录
+ */
 const searchHistory = () => {
   history.value = store.projects.filter((item: any) => item.meta.id.includes(search.value))
 }
